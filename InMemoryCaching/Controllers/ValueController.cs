@@ -14,26 +14,42 @@ namespace InMemoryCaching.Controllers
             _memoryCache = memoryCache;
         }
 
-        [HttpGet("set")]
-        public void Set(string name)
-        {
-            _memoryCache.Set("name", name);
+        //[HttpGet("set")]
+        //public void SetName(string name)
+        //{
+        //    _memoryCache.Set("name", name);
 
+        //}
+
+        //[HttpGet("get")]
+        //public string GetName()
+        //{
+        //    if (_memoryCache.TryGetValue<string>("name", out string name)) // bu şekilde kendimizi program run time da set edilmeden get edilmesine karşılık güvene almaktan dolayı kullanılmıştır.
+        //    {
+        //        return name.Substring(3);
+        //    }
+        //    return "false";
+        //    //_memoryCache.Get("name"); 
+        //    //return _memoryCache.Get<string>("name"); // bu şekilde kullanıldığında verilmiş olan değer string türünde geriye dönecektir.
+
+        //}
+
+
+        [HttpGet("setDate")]
+        public void SetDate()
+        {
+            _memoryCache.Set<DateTime>("date", DateTime.Now, options : new()
+            {
+                AbsoluteExpiration = DateTime.Now.AddSeconds(30), //en fazla 30 sn sonra cache temizlenir,
+                SlidingExpiration = TimeSpan.FromSeconds(5) // 30 saniyeyi beklemeden eğer ki 5 sn sonra data get edilmezse yine silinir.
+            });
         }
 
-        [HttpGet("get")]
-        public string Get()
+        [HttpGet("getDate")]
+        public DateTime GetDate()   
         {
-            //_memoryCache.Get("name"); 
-            return _memoryCache.Get<string>("name"); // bu şekilde kullanıldığında verilmiş olan değer string türünde geriye dönecektir.
-
+            return _memoryCache.Get<DateTime>("date");
         }
-
-
-
-
-
-
 
 
     }
@@ -52,3 +68,10 @@ Controller, ControllerBase'den türetilmiştir ve daha fazla MVC özelliği sağ
  Bir MVC uygulamasında, genellikle ControllerBase sınıfından türetilmiş controllerlar, API'ler oluşturmak veya sadece verileri JSON formatında döndürmek için kullanılırken, Controller sınıfından türetilmiş controllerlar, tam web uygulamaları oluşturmak ve Razor View Engine ile HTML sayfaları göstermek için kullanılır
  Dolayısıyla, seçim, uygulama ihtiyaçlarına ve kullanım senaryolarına bağlıdır. API geliştirmek veya sadece veri döndürmek için ControllerBase, tam web uygulamaları oluşturmak için ise Controller kullanmak uygun olacaktır.
  */
+
+
+// Absolute Expiration : Cache deki datanın ne akdar tutulacağına dair net ömrünün belirtilmesidir. belirtilen ömür sona erdiğinde cache direkt olarak temizlenir. belirtilen ömür sona erdiğinde bu data temizlenecektir.
+
+// Sliding Expiration : Cache'lenmiş datanın memory'de belirtilen süre periyodu zarfında tutulmasını belirtir. Belirtilen süre periyodu içerisinde cache'e yapılan erişim neticesinde  de datanın ömrü bir o kadar uzatılacaktır. Aksi taktirde belirtilen süre zarfında bir erişim söz konusu olmazsa cache temizlenecektir.
+
+// ** Bir veriye ayrı ayrı oalrak Absulete ve Sliding Time verilebilir veyahutta 2 SÜRE DE VERİLEBİLİR.  **
