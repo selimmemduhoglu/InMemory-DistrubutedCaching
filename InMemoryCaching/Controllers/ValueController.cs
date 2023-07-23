@@ -57,6 +57,11 @@ namespace InMemoryCaching.Controllers
 
 
 
+// AddmemoryCache, servisini uygulamaya ekleyiniz.
+// IMemoryCache, referansını inject ediniz.
+// Set methoduyla veriyi cache leyebilir, Get methoduyla cache lenmiş veriyi elde edebilirsiniz.
+// Remove fonsiyonuyla cache lenmiş veriyi silebilirsiniz.
+// TryGetValue methoduyla kontrollü bir şekilde cache den veriiyi okuyabilirsiniz.
 
 
 
